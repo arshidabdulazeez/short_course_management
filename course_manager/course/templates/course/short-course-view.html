@@ -1,0 +1,272 @@
+<!-- <?php include("header.php"); ?> -->
+{% include 'user_management/header.html' %}
+{% load static %}
+
+
+<!--app-content open-->
+<!--app-content open-->
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+
+        <!-- CONTAINER -->
+        <div class="main-container container-fluid">
+
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+                <h1 class="page-title">Short Term Course View</h1>
+                <a href="{% url 'create_course' %}" class="btn btn-danger btn-pill">
+                    Add <i class="fa fa-plus"></i>
+                </a>
+            </div>
+            <!-- PAGE-HEADER END -->
+
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Short Term Course Table</h3>
+                        </div>
+                        <!-- ajax -->
+                        <div class="search-bar">
+                            <input type="text" id="course-search" placeholder="Search by Title">
+                        </div>
+                        <div class="search-results">
+                            <!-- Results will be displayed here -->
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table border text-nowrap text-md-nowrap table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl No</th>
+                                            <th>Image</th>
+                                            <th>Title</th>
+                                            <th>Subtitle</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- TABLE DETAILS -->
+                                        {% for course in courses %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>
+                                                    <img class="d-block img-fluid br-5 img-td"
+                                                        src="{{ course.image.url }}"
+                                                        alt="111">
+                                                <p>{{ course.image.url }}</p>
+                                                </td>
+                                                <td>{{ course.title }}</td>
+                                                <td>{{ course.subtitle }}</td>
+                                                <td>
+                                                    <a class="btn btn-primary view-description" data-bs-toggle="modal"
+                                                        data-bs-target="#descriptionModal" data-description="{{ course.description }}">
+                                                        <i class="side-menu__icon fe fe-eye text-white"></i>
+                                                    </a>
+                                                </td>
+                                                <td>{{ course.amount }}</td>
+                                                
+                                                <td>
+                                                    {% if course.status == 'active' %}
+                                                    <a href="#">
+                                                        <span class="btn btn-success">Active</span>
+                                                    </a>
+                                                    {% else %}
+                                                    <a href="#">
+                                                        <span class="btn btn-danger">Inactive</span>
+                                                    </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-info" href="{% url 'edit_course' course.pk %}">
+                                                        <i class="side-menu__icon fe fe-edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger" href="{% url 'delete_course' course.pk %}">
+                                                        <i class="side-menu__icon fe fe-trash text-white"></i>
+                                                    </a>
+                                                    <!-- <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldemo5">
+                                                        <i class="side-menu__icon fe fe-trash text-white"></i>
+                                                    </a> -->
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        <!-- TABLE DETAILS END -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-body">
+                                <div class="pagination">
+                                    <span class="page-item">
+                                      {% if courses.has_previous %}
+                                        <a href="?page=1{% if query %}&query={{ query }}{% endif %}"></a>
+                                        <a class="page-item page-prev" href="?page={{ courses.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">Prev</a>
+                                      {% endif %}
+                                  
+                                      <span class="page-item active" class="current-page">{{ courses.number }}</span>
+                                  
+                                      {% if courses.has_next %}
+                                        <a class="page-item page-next" href="?page={{ courses.next_page_number }}{% if query %}&query={{ query }}{% endif %}">Next</a>
+                                        <!-- <a class="page-item page-next" href="?page={{ courses.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}">last &raquo;</a> -->
+                                      {% endif %}
+                                    </span>
+                                  </div>
+                                <!-- <ul class="pagination">
+                                    <li class="page-item page-prev">
+                                        <a class="page-link" href="#" tabindex="-1">Prev</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">4</a>
+                                    </li>
+                                    <li class="page-item page-next">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul> -->
+                                <!-- pagination-wrapper -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- CONTAINER END -->
+        </div>
+    </div>
+    <!--app-content close-->
+
+<!-- ... -->
+<!-- Description Modal -->
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md modal-dialog-centered text-center" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button aria-label="Close" class="btn-close position-absolute" data-bs-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="text-primary">Description</h4>
+                <p class="mg-b-20 mg-x-20" id="courseDescriptionModal"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<tbody>
+    {% for course in courses %}
+        <tr>
+            <!-- ... -->
+            <td>
+                <a class="btn btn-primary view-description" data-bs-toggle="modal" data-bs-target="#descriptionModal"
+                   data-description="{{ course.description }}">
+                    <i class="side-menu__icon fe fe-eye text-white"></i>
+                </a>
+            </td>
+            <!-- ... -->
+        </tr>
+    {% endfor %}
+</tbody>
+<!-- ... -->
+
+<script>
+    $(document).ready(function () {
+        $(".view-description").click(function () {
+            var description = $(this).data('description');
+            $("#courseDescriptionModal").text(description);
+        });
+    });
+</script>
+
+    <!-- Course Detail Modal -->
+    <div class="modal fade" id="crsdetail" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered text-center" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button aria-label="Close" class="btn-close position-absolute" data-bs-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample course details -->
+                            <tr>
+                                <td>Lorem ipsum</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua.</td>
+                            </tr>
+                            <tr>
+                                <td>Lorem ipsum</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua.</td>
+                            </tr>
+                            <tr>
+                                <td>Lorem ipsum</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                    tempor incididunt ut labore et dolore magna aliqua.</td>
+                            </tr>
+                            <!-- End of sample course details -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button aria-label="Close" class="btn btn-danger pd-x-25" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include footer -->
+    {% include 'user_management/footer.html' %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#course-search").on("input", function () {
+            const query = $(this).val();
+            if (query.length >= 3) {
+                $.ajax({
+                    url: "{% url 'search_courses' %}",
+                    data: { query: query },
+                    dataType: "json",
+                    success: function (data) {
+                        displaySearchResults(data);
+                    }
+                });
+            } else {
+                $(".search-results").empty();
+            }
+        });
+    });
+
+    function displaySearchResults(data) {
+        const resultsContainer = $(".search-results");
+        resultsContainer.empty();
+
+        if (data.length === 0) {
+            resultsContainer.html("<p>No results found.</p>");
+        } else {
+            const resultList = $("<ul>");
+            data.forEach(function (course) {
+                const listItem = $("<li>").html(course.title);
+                resultList.append(listItem);
+            });
+            resultsContainer.append(resultList);
+        }
+    }
+</script>
+
+
